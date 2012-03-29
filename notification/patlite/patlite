@@ -1,0 +1,24 @@
+#!/bin/sh
+
+user=zabbix
+notclassified=000000
+information=001000
+warning=010000
+average=100000
+high=111001
+disaster=222002
+
+ipaddress=$1
+severity=$3
+
+case $severity in
+    0) options=$notclassified;;
+    1) options=$information;;
+    2) options=$warning;;
+    3) options=$average;;
+    4) options=$high;;
+    5) options=$disaster;;
+    *) options=000000;;
+esac
+
+/usr/bin/rsh $ipaddress -l $user alert $options
