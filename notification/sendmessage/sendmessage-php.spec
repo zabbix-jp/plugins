@@ -9,6 +9,10 @@ License:        GPL
 URL:            http://www.zabbix.jp
 Source0:        sendmessage-php
 
+Requires:       php-cli
+Requires:       php-mbstring
+Requires:       zabbix-server
+
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 %description
