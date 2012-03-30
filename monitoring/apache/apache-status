@@ -1,0 +1,47 @@
+#!/bin/sh
+
+error() {
+    echo "ZBX_NOTSUPPORTED"
+    exit 1
+}
+
+[ $# -ne 1 ] && error
+
+STATUS="0"
+PARAM=""
+
+case $1 in
+    "total_access") PARAM="Total Accesses";;
+    "total_kbytes") PARAM="Total kBytes";;
+    "cpuload")      PARAM="CPULoad";;
+    "uptime")       PARAM="Uptime";;
+    "reqpersec")    PARAM="ReqPerSec";;
+    "bytespersec")  PARAM="BytesPerSec";;
+    "bytesperreq")  PARAM="BytesPerReq";;
+    "busyworkers")  PARAM="BusyWorkers";;
+    "idleworkers")  PARAM="IdleWorkers";;
+    "wait"|"start"|"read"|"send"|"keep"|"dns"|"close"|"log"|"grace"|"idle") PARAM="Scoreboard";;
+    *) error ;;
+esac
+
+STATUS=$(curl -s http://localhost/zabbix-apache-status?auto|grep "^$PARAM"|cut -d":" -f2)
+
+if [ "$PARAM" = "Scoreboard" ]; then
+    case $1 in
+        "wait")  IFS="_";;
+        "read")  IFS="R";;
+        "send")  IFS="W";;
+        "keep")  IFS="K";;
+        "dns")   IFS="D";;
+        "close") IFS="C";;
+        "log")   IFS="L";;
+        "grace") IFS="G";;
+        "idle")  IFS="I";;
+        *) error;;
+    esac
+    STATUS="|$STATUS|"
+    set -- $STATUS
+    STATUS=$(($#-1))
+fi
+
+echo $STATUS
