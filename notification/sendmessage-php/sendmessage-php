@@ -11,7 +11,8 @@
 ** This program is licenced under the GPL
 **/
 
-$MAIL_FROM   = "zabbix@localhost";
+$CONFIGS = parse_ini_file("/etc/zabbix/plugins/sendmessage-php.conf");
+$MAIL_FROM = $CONFIGS["MAIL_FROM"];
 
 mb_language('Japanese');
 mb_internal_encoding('UTF-8');
